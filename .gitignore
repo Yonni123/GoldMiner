@@ -159,5 +159,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 /.idea
-gameplay.mp4
-screenshot.png
+Videos/gameplay.mp4
+Images/screenshot.png
+/Images
