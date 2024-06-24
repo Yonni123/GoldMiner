@@ -1,15 +1,28 @@
 import cv2 as cv2
 import numpy as np
 import Helper
+from Helper import display_frame
 
 
 def edge_detection(frame):
     threshold1 = 50
     threshold2 = 2 * threshold1
     edges = cv2.Canny(frame, threshold1, threshold2)
+
+    line_edges = cv2.imread('Images/TheLine.png', cv2.IMREAD_GRAYSCALE)
+    line_edges = line_edges[145: Helper.image_height, 0: Helper.image_width]
+    edges = cv2.bitwise_and(edges, line_edges)
+
+    kernel = np.ones((10, 10), np.uint8)
+    edges2 = cv2.dilate(edges, kernel, iterations=2)
+    edges2 = cv2.erode(edges2, kernel, iterations=1)
+    line_inv = cv2.bitwise_not(line_edges)
+    intersect = cv2.bitwise_and(edges2, line_inv)
+    edges = cv2.bitwise_or(edges, intersect)
     kernel = np.ones((3, 3), np.uint8)
     edges = cv2.dilate(edges, kernel, iterations=1)
     edges = cv2.erode(edges, kernel, iterations=1)
+
     return edges
 
 

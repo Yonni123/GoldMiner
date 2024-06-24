@@ -4,41 +4,9 @@ import random
 import string
 
 # Values to be used later
-black_border_cont = None  # In case video feed has black borders, they don't need to be calculated in every frame
+black_border_cont = (None, None, None, None)  # Info about black border
 image_height = 720  # Size for every frame, they have to be consistent, the game looks 4:3
 image_width = 960
-
-
-# Calulates
-def calc_black_border_cont(image):
-    # Calculates the size of the black borders, if they exist
-
-    # Parameters:
-    #   image (OpenCV frame): The image with or without black border
-
-    # Returns:
-    #   black_border_cont(OpenCV Contour): Global contour that can be re-used later to remove black borders
-    #   black_border_cont is either a contour if it finds black borders, or -1 if there aren't any
-    global black_border_cont
-
-    image = np.array(image)
-    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, thresh = cv2.threshold(image_gray, 1, 255, cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    biggest = np.array([])
-    max_area = 0
-    for cntrs in contours:
-        area = cv2.contourArea(cntrs)
-        peri = cv2.arcLength(cntrs, True)
-        approx = cv2.approxPolyDP(cntrs, 0.02 * peri, True)
-        if area > max_area and len(approx) == 4:
-            biggest = approx
-            max_area = area
-    cnt = biggest
-    if len(cnt) == 0:
-        black_border_cont = -1
-    else:
-        black_border_cont = cv2.boundingRect(cnt)
 
 
 def preprocess_frame(frame):
@@ -55,12 +23,27 @@ def preprocess_frame(frame):
         raise ValueError("Could not open or find the image.")
 
     # Remove black borders
-    if black_border_cont is None:   # Calculate the contour of the black border
-        calc_black_border_cont(frame)
-
-    if black_border_cont != -1:  # -1 means the image has no black borders
-        (x, y, w, h) = black_border_cont
-        frame = frame[0: y + h, x: x + w]
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    top, bottom, left, right = black_border_cont
+    if top is None or bottom is None or left is None or right is None:
+        # Get the dimensions of the image
+        h, w = gray.shape
+        # Check for black pixels on the top border
+        top = 0
+        while top < h and np.all(gray[top] == 0):
+            top += 1
+        bottom = h - 1  # Check for black pixels on the bottom border
+        while bottom >= 0 and np.all(gray[bottom] == 0):
+            bottom -= 1
+        left = 0  # Check for black pixels on the left border
+        while left < w and np.all(gray[:, left] == 0):
+            left += 1
+        right = w - 1  # Check for black pixels on the right border
+        while right >= 0 and np.all(gray[:, right] == 0):
+            right -= 1
+        black_border_cont = (top, bottom, left, right)
+        print(black_border_cont)
+    frame = frame[top:bottom + 1, left:right + 1]
 
     # Resize to the specified image_height and image_width
     frame = cv2.resize(frame, (image_width, image_height), interpolation=cv2.INTER_AREA)
