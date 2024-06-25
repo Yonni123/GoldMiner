@@ -87,5 +87,5 @@ def test_screen():
 
 if __name__ == "__main__":
     #test_image('Images/lvl3manyobjects.png')
-    test_video('Videos/gameplay.mp4')
+    test_video('Videos/lvl7.mp4')
     #test_screen()
