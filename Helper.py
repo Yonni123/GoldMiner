@@ -67,6 +67,12 @@ def preprocess_frame(frame):
         print(black_border_cont)
     frame = frame[top:bottom + 1, left:right + 1]
 
+    # Calculate the scaling factors
+    original_height = (bottom - top) + 1
+    original_width = (right - left) + 1
+    Constants.scale_y = Constants.image_height / original_height
+    Constants.scale_x = Constants.image_width / original_width
+
     # Resize to the specified image_height and image_width
     frame = cv2.resize(frame, (Constants.image_width, Constants.image_height), interpolation=cv2.INTER_AREA)
     return frame

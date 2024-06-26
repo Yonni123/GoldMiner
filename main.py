@@ -48,14 +48,12 @@ def test_video(filename):
         for (x, y, w, h) in boxes:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green color, thickness of 2
 
-        a = ha.extract_wire_mask(frame)
+        unitV = ha.get_hook_direction(frame)
+        frame = ha.draw_hook_direction(frame, unitV)
 
         # Display the resulting frame
         cv2.imshow('Video Playback', frame)
         cv2.imshow('Mask Playback', mask)
-        if a is not int:
-            cv2.imshow('Mask Hook', a)
-        frame_counter += 1
 
         # Exit the video when 'q' key is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -83,6 +81,9 @@ def test_screen():
             for (x, y, w, h) in boxes:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green color, thickness of 2
 
+            unitV = ha.get_hook_direction(frame)
+            frame = ha.draw_hook_direction(frame, unitV)
+
             cv2.imshow('Screen Capture', frame)
             cv2.imshow('Screen Mask', mask)
             a = ha.extract_wire_mask(frame)
@@ -97,5 +98,5 @@ def test_screen():
 
 if __name__ == "__main__":
     #test_image('Images/lvl7.png')
-    test_video('Videos/Hook.mp4')
-    #test_screen()
+    #test_video('Videos/gameplay.mp4')
+    test_screen()

@@ -67,11 +67,11 @@ def get_mask(frame):
     return uncropped_mask, conts_to_return
 
 
-def get_bounding_boxes(cont):
+def get_bounding_boxes(cont, least_area=50):
     boxes = []
     for contour in cont:
         area = cv2.contourArea(contour)
-        if area > 50:   # Avoid very small bounding boxes
+        if area > least_area:   # Avoid very small bounding boxes
             x, y, w, h = cv2.boundingRect(contour)
             boxes.append((x, y, w, h))
     return boxes

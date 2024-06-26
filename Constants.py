@@ -8,3 +8,9 @@ image_width = 960
 
 # Bottom blue circle to rope thingy
 BlueCircleCutPercent = 81
+
+aspect_ratio = image_width / image_height
+
+# Calculate the scaling factors
+scale_x = None
+scale_y = None
