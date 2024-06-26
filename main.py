@@ -4,6 +4,7 @@ import Helper
 import ObjectDetection as OD
 import mss
 import numpy as np
+import HookAngle as ha
 
 
 def test_image(filename):
@@ -11,12 +12,14 @@ def test_image(filename):
     frame = cv2.imread(filename)
     frame = Helper.preprocess_frame(frame)
 
-    mask = OD.get_mask(frame)
-    boxes = OD.get_bounding_boxes(mask)
+    mask, cont = OD.get_mask(frame)
+    boxes = OD.get_bounding_boxes(cont)
     for (x, y, w, h) in boxes:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green color, thickness of 2
     end_time = time.time()
     print(f"Took {end_time - start_time:.6f} seconds to run.")
+
+    a = ha.get_hook_angle(frame)
 
     cv2.imshow('res', frame)
     cv2.imshow('mask', mask)
@@ -41,8 +44,8 @@ def test_video(filename):
             break
 
         frame = Helper.preprocess_frame(frame)
-        mask = OD.get_mask(frame)
-        boxes = OD.get_bounding_boxes(mask)
+        mask, cont = OD.get_mask(frame)
+        boxes = OD.get_bounding_boxes(cont)
         for (x, y, w, h) in boxes:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green color, thickness of 2
 
@@ -86,6 +89,6 @@ def test_screen():
 
 
 if __name__ == "__main__":
-    #test_image('Images/lvl3manyobjects.png')
+    #test_image('Images/lvl7.png')
     test_video('Videos/lvl7.mp4')
     #test_screen()

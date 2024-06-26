@@ -60,9 +60,11 @@ def preprocess_frame(frame):
         left = 0  # Check for black pixels on the left border
         while left < w and np.mean(gray[:, left]) < threshold:
             left += 1
+        left += 2
         right = w - 1  # Check for black pixels on the right border
         while right >= 0 and np.mean(gray[:, right]) < threshold:
             right -= 1
+        right -= 2
         black_border_cont = (top, bottom, left, right)
         print(black_border_cont)
     frame = frame[top:bottom + 1, left:right + 1]
