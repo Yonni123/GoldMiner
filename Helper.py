@@ -2,12 +2,10 @@ import cv2 as cv2
 import numpy as np
 import random
 import string
+import Constants
 
 # Values to be used later
 black_border_cont = (None, None, None, None)  # Info about black border
-image_height = 720  # Size for every frame, they have to be consistent, the game looks 4:3
-image_width = 960
-
 
 def display_frame(frame, ifWait=True):
     # Displays a frame, used to quickly see any frame anywhere in the code
@@ -38,7 +36,7 @@ def preprocess_frame(frame):
 
     # Returns:
     #   frame(OpenCV frame): The new preprocessed frame with appropriate size and no black borders
-    global black_border_cont, image_height, image_width
+    global black_border_cont
 
     if frame is None:
         raise ValueError("Could not open or find the image.")
@@ -70,5 +68,5 @@ def preprocess_frame(frame):
     frame = frame[top:bottom + 1, left:right + 1]
 
     # Resize to the specified image_height and image_width
-    frame = cv2.resize(frame, (image_width, image_height), interpolation=cv2.INTER_AREA)
+    frame = cv2.resize(frame, (Constants.image_width, Constants.image_height), interpolation=cv2.INTER_AREA)
     return frame
